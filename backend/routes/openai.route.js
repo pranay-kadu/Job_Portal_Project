@@ -1,10 +1,8 @@
 import express from "express";
-import OpenAI from "openai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const router = express.Router();
-const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
 
 router.post("/ask", async (req, res) => {
   try {
@@ -14,19 +12,14 @@ router.post("/ask", async (req, res) => {
       return res.status(400).json({ reply: "Prompt missing." });
     }
 
-    // use latest model
-    const response = await client.chat.completions.create({
-      model: "gpt-4.1-mini",
-      messages: [
-        { role: "user", content: prompt }
-      ],
-    });
-
-    const reply = response.choices[0].message.content;
+    // Use Google Gemini model
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const result = await model.generateContent(prompt);
+    const reply = result.response.text();
 
     res.json({ reply });
   } catch (error) {
-    console.error("OpenAI Error:", error);
+    console.error("AI Error:", error);
     res.status(500).json({
       reply: "AI Error. Please try again.",
       error: error.message,

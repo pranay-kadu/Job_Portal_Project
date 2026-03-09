@@ -16,7 +16,7 @@ import { Building2, Users, BarChart } from 'lucide-react'
 const Companies = () => {
   useGetAllCompanies();
   const [input, setInput] = useState("")
-  const [stats, setStats] = useState({ totalStudents: 0, totalCompanies: 0, placementRate: 0 });
+  const [stats, setStats] = useState({ totalStudents: 0, totalCompanies: 0, placedStudents: 0 });
   const navigate = useNavigate();
   const dispatch = useDispatch();
 

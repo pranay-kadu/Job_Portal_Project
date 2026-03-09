@@ -8,14 +8,16 @@ import { Label } from "./ui/label";
 import AppliedJobTable from "./AppliedJobTable";
 import UpdateProfileDialog from "./UpdateProfileDialog";
 import { useSelector } from "react-redux";
-import useGetAppliedJobs from "../hooks/useGetAppliedJobs"
+import useGetAppliedJobs from "../hooks/useGetAppliedJobs";
+import { useNavigate } from "react-router-dom";
 //const skills = ["Html", "css", "javascript", "reactjs"];
 const isResume = true;
 
 const Profile = () => {
-useGetAppliedJobs();
+  useGetAppliedJobs();
   const [open, setOpen] = useState(false);
-  const {user} = useSelector(store=>store.auth);
+  const { user } = useSelector(store => store.auth);
+  const navigate = useNavigate();
 
 
   return (
@@ -58,18 +60,18 @@ useGetAppliedJobs();
           <h1 className="font-bold text-lg text-[#0f4c81]">Skills</h1>
           <div className="flex items-center gap-2 my-2">
             {
-            user?.profile?.skills.length != 0 ? (
-              user?.profile?.skills.map((item, index) => (
-                <Badge
-                  className="text-green-700 font-semibold border border-green-200 bg-green-50 transition duration-300 hover:scale-105 text-sm"
-                  key={index}
-                >
-                  {item}
-                </Badge>
-              ))
-            ) : (
-              <span>No skills found</span>
-            )}
+              user?.profile?.skills.length != 0 ? (
+                user?.profile?.skills.map((item, index) => (
+                  <Badge
+                    className="text-green-700 font-semibold border border-green-200 bg-green-50 transition duration-300 hover:scale-105 text-sm"
+                    key={index}
+                  >
+                    {item}
+                  </Badge>
+                ))
+              ) : (
+                <span>No skills found</span>
+              )}
           </div>
         </div>
         <div className="grid w-full max-w-sm items-center gap-1.5">
@@ -106,11 +108,13 @@ useGetAppliedJobs();
             <span>No Resume Found</span>
           )}
         </div>
+
+
         <div className="max-w-4xl mx-auto bg-white rounded-2xl"></div>
         <h1 className="font-bold text-lg text-[#0f4c81] mt-2">Applied Jobs</h1>
         <AppliedJobTable />
       </div>
-      <UpdateProfileDialog open={open} setOpen={setOpen}/>
+      <UpdateProfileDialog open={open} setOpen={setOpen} />
     </div>
   );
 };

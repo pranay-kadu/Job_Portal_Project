@@ -2,7 +2,7 @@ import React from 'react';
 import { CheckCircle2, Circle, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-const Tracker = ({ steps, currentStep }) => {
+const Tracker = ({ steps, currentStep, onUpdateStep }) => {
     // Determine active steps or completed steps
     // steps is array of { name, status, date }
     // currentStep is number (index)
@@ -14,16 +14,22 @@ const Tracker = ({ steps, currentStep }) => {
                 const isCurrent = index === currentStep && step.status !== 'completed';
                 // const isPending = step.status === 'pending' && !isCurrent;
 
+                // Allow interaction if it's the current step and onUpdateStep is provided
+                const isInteractive = isCurrent && onUpdateStep;
+
                 return (
                     <div key={index} className="flex gap-4">
                         {/* Status Icon & Line */}
                         <div className="flex flex-col items-center">
-                            <div className={cn(
-                                "z-10 flex h-8 w-8 items-center justify-center rounded-full border-2",
-                                isCompleted ? "border-green-500 bg-green-500 text-white" :
-                                    isCurrent ? "border-blue-500 bg-white text-blue-500" :
-                                        "border-gray-300 bg-white text-gray-300"
-                            )}>
+                            <div
+                                onClick={() => isInteractive && onUpdateStep(index)}
+                                className={cn(
+                                    "z-10 flex h-8 w-8 items-center justify-center rounded-full border-2 transition-all",
+                                    isCompleted ? "border-green-500 bg-green-500 text-white" :
+                                        isCurrent ? "border-blue-500 bg-white text-blue-500" :
+                                            "border-gray-300 bg-white text-gray-300",
+                                    isInteractive ? "cursor-pointer hover:scale-110 hover:bg-blue-50" : ""
+                                )}>
                                 {isCompleted ? <CheckCircle2 className="h-5 w-5" /> :
                                     isCurrent ? <Clock className="h-5 w-5 animate-pulse" /> :
                                         <Circle className="h-5 w-5" />}
@@ -49,7 +55,7 @@ const Tracker = ({ steps, currentStep }) => {
                             <p className="text-xs text-gray-400">
                                 {step.status === 'completed' && step.date ? new Date(step.date).toDateString() :
                                     isCompleted ? "Completed" :
-                                        isCurrent ? "In Progress" : "Pending"}
+                                        isCurrent ? (onUpdateStep ? "Click icon to complete" : "In Progress") : "Pending"}
                             </p>
                         </div>
                     </div>

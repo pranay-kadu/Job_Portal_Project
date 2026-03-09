@@ -1,8 +1,32 @@
 import { Company } from "../models/company.model.js";
 import { User } from "../models/user.model.js";
 import { Application } from "../models/application.model.js";
+import { Job } from "../models/job.model.js";
 import getDataUri from "../utils/datauri.js";
 import cloudinary from "../utils/cloudinary.js";
+
+// ... existing code ...
+
+export const deleteCompany = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const company = await Company.findById(id);
+    if (!company) {
+      return res.status(404).json({ message: "Company not found" });
+    }
+
+    // Delete all jobs related to this company
+    await Job.deleteMany({ company: id });
+
+    await Company.findByIdAndDelete(id);
+
+    return res.status(200).json({ message: "Company deleted successfully" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
 
 export const registerCompany = async (req, res) => {
   try {
@@ -104,26 +128,7 @@ export const updateCompany = async (req, res) => {
   }
 };
 
-export const deleteCompany = async (req, res) => {
-  try {
-    const { id } = req.params;
 
-    const company = await Company.findById(id);
-    if (!company) {
-      return res.status(404).json({ message: "Company not found" });
-    }
-
-    // Delete all jobs related to this company
-    // await Job.deleteMany({ company: id });
-
-    await Company.findByIdAndDelete(id);
-
-    return res.status(200).json({ message: "Company deleted successfully" });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: "Server error" });
-  }
-};
 
 export const getCompanyStats = async (req, res) => {
     try {
@@ -132,12 +137,8 @@ export const getCompanyStats = async (req, res) => {
         const totalApplications = await Application.countDocuments({});
         const totalAcceptedApplications = await Application.countDocuments({ status: 'accepted' });
         
+
         // Calculate placement rate: (Accepted / Total Applications) * 100
-        // Or if user meant (Accepted / Total Students), but usually it's based on apps or active seekers.
-        // User said "total request accepted by the admin can calculate the placement report".
-        // Let's assume (Accepted Applications / Total Applications) * 100 for now, or just send raw numbers.
-        // Let's send the percentage.
-        
         let placementRate = 0;
         if (totalApplications > 0) {
             placementRate = (totalAcceptedApplications / totalApplications) * 100;
@@ -146,7 +147,8 @@ export const getCompanyStats = async (req, res) => {
         return res.status(200).json({
             totalStudents,
             totalCompanies,
-            placementRate: placementRate.toFixed(2), // Send as string or number with 2 decimals
+            placedStudents: totalAcceptedApplications,
+            placementRate: placementRate.toFixed(2), 
             success: true
         });
     } catch (error) {

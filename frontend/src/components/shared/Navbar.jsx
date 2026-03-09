@@ -2,7 +2,7 @@ import React from 'react'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 import { Button } from '../ui/button'
 import { Avatar, AvatarImage } from '../ui/avatar'
-import { LogOut, User2 } from 'lucide-react'
+import { LogOut, User2, FileText, ScanLine, Bot } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import axios from 'axios'
@@ -33,9 +33,9 @@ const Navbar = () => {
         <div className="bg-gray-100 backdrop-blur-md sticky top-0 z-50 shadow-sm ">
             <div className="flex items-center justify-between mx-auto max-w-7xl px-6 h-16">
 
-           
+
                 <Link to="/" className="flex items-center gap-1">
-                    <h1 className="text-2xl font-bold tracking-tight">
+                    <h1 className="text-2xl font-bold tracking-tight text-gray-900">
                         <span className="text-[#080a92]">AI Based</span> Smart Placement Portal System
                     </h1>
                 </Link>
@@ -53,12 +53,11 @@ const Navbar = () => {
                                 <li className="hover:text-[#0052CC] transition"><Link to="/">Home</Link></li>
                                 <li className="hover:text-[#0052CC] transition"><Link to="/jobs">Jobs</Link></li>
                                 <li className="hover:text-[#0052CC] transition"><Link to="/browse">Browse</Link></li>
-                                <li className="hover:text-[#0052CC] transition"><Link to="/resumeparser">Resume Parser</Link></li>
                             </>
                         )}
                     </ul>
 
-                    
+
                     {!user ? (
                         <div className="flex items-center gap-3">
                             <Link to="/login">
@@ -92,12 +91,32 @@ const Navbar = () => {
                                 <div className="flex flex-col mt-4 gap-3 text-gray-600">
 
                                     {user.role === 'student' && (
-                                        <div className="flex items-center gap-2 hover:text-[#0052CC] cursor-pointer transition">
-                                            <User2 size={18} />
-                                            <Link to="/profile">
-                                                <Button variant="link" className="p-0">View Profile</Button>
-                                            </Link>
-                                        </div>
+                                        <>
+                                            <div className="flex items-center gap-2 hover:text-[#0052CC] cursor-pointer transition">
+                                                <User2 size={18} />
+                                                <Link to="/profile">
+                                                    <Button variant="link" className="p-0">Profile</Button>
+                                                </Link>
+                                            </div>
+                                            <div className="flex items-center gap-2 hover:text-[#0052CC] cursor-pointer transition">
+                                                <FileText size={18} />
+                                                <Link to="/resume-builder">
+                                                    <Button variant="link" className="p-0">Resume Builder</Button>
+                                                </Link>
+                                            </div>
+                                            <div className="flex items-center gap-2 hover:text-[#0052CC] cursor-pointer transition">
+                                                <ScanLine size={18} />
+                                                <Link to="/resume-parser">
+                                                    <Button variant="link" className="p-0">Resume Parser</Button>
+                                                </Link>
+                                            </div>
+                                            <div className="flex items-center gap-2 hover:text-[#0052CC] cursor-pointer transition">
+                                                <Bot size={18} />
+                                                <Link to="/interview-bot">
+                                                    <Button variant="link" className="p-0">Interview Bot</Button>
+                                                </Link>
+                                            </div>
+                                        </>
                                     )}
 
                                     <div className="flex items-center gap-2 hover:text-red-600 cursor-pointer transition">

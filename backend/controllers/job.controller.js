@@ -89,8 +89,12 @@ export const getAllJobs = async (req, res) => {
         success: false,
       });
     }
+
+    // Filter out jobs where the company has been deleted
+    const validJobs = jobs.filter(job => job.company);
+
     return res.status(200).json({
-      jobs,
+      jobs: validJobs,
       success: true,
     });
   } catch (error) {
@@ -129,8 +133,12 @@ export const getAdminJobs = async (req, res) => {
         success: false,
       });
     }
+    
+    // Filter out jobs where the company has been deleted (orphan jobs)
+    const validJobs = jobs.filter(job => job.company);
+
     return res.status(200).json({
-      jobs,
+      jobs: validJobs,
       success: true,
     });
   } catch (error) {

@@ -36,8 +36,8 @@ const AppliedJobTable = () => {
                         allAppliedJobs.length <= 0 ? <span>You haven't applied any job yet.</span> : allAppliedJobs.map((appliedJob) => (
                             <TableRow key={appliedJob._id}>
                                 <TableCell>{appliedJob?.createdAt?.split("T")[0]}</TableCell>
-                                <TableCell>{appliedJob.job?.title}</TableCell>
-                                <TableCell>{appliedJob.job?.company?.name}</TableCell>
+                                <TableCell>{appliedJob.job?.title || <span className="text-red-500">Job Removed</span>}</TableCell>
+                                <TableCell>{appliedJob.job?.company?.name || <span className="text-gray-500">Company Deleted</span>}</TableCell>
                                 <TableCell className="text-right">
                                     <div className="flex items-center justify-end gap-2">
                                         <Badge

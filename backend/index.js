@@ -12,6 +12,15 @@ import companyRoute from "./routes/company.route.js";
 import jobRoute from "./routes/job.route.js";
 import applicationRoute from "./routes/application.route.js";
 import openaiRoute from "./routes/openai.route.js";
+import http from 'http';
+import { initializeWebSocket } from './interview-bot-merged/config/websocket.js';
+import configRoutes from './interview-bot-merged/routes/configRoutes.js';
+import interviewRoutes from './interview-bot-merged/routes/interviewRoutes.js';
+import reportRoutes from './interview-bot-merged/routes/reportRoutes.js';
+import monitoringRoutes from './interview-bot-merged/routes/monitoringRoutes.js';
+import isAuthenticated from "./middlewares/isAuthenticated.js";
+import resumeRoutes from "./routes/resumeRoutes.js";
+import aiRoute from "./routes/aiRoute.js";
 
 
 
@@ -21,7 +30,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const server = http.createServer(app);
+initializeWebSocket(server);
+const PORT = process.env.PORT || 8000;
 
 /* -------------------- Middleware -------------------- */
 app.use(express.json());
@@ -30,7 +41,7 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "http://localhost:5174"],
     credentials: true,
   })
 );
@@ -43,6 +54,14 @@ app.use("/api/v1/job", jobRoute);
 app.use("/api/v1/application", applicationRoute);
 app.use("/api/v1/openai", openaiRoute);
 
+// Interview Bot Routes
+app.use('/api/config', isAuthenticated, configRoutes);
+app.use('/api/interview', isAuthenticated, interviewRoutes);
+app.use('/api/report', isAuthenticated, reportRoutes);
+app.use('/api/monitoring', isAuthenticated, monitoringRoutes);
+app.use('/api/resumes', resumeRoutes);
+app.use('/api/ai', aiRoute);
+
 
 
 
@@ -51,7 +70,8 @@ app.get("/", (req, res) => {
 });
 
 /* -------------------- Start Server -------------------- */
-app.listen(PORT, async () => {
+server.listen(PORT, async () => {
   await connectDB();
   console.log(` Server running on port ${PORT}`);
+  console.log(`WebSocket server ready`);
 });

@@ -16,6 +16,7 @@ import { APPLICATION_API_END_POINT } from "@/utils/constant";
 import axios from "axios";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { setAllApplicants } from "@/redux/applicationSlice";
+import Tracker from "../Tracker";
 
 const shortlistingStatus = ["Accepted", "Rejected"];
 
@@ -201,10 +202,10 @@ const ApplicantsTable = () => {
                 {(item.status === 'accepted' || item.status === 'rejected') && (
                   <Eye
                     className={`w-5 h-5 cursor-pointer ${item.status === 'rejected'
-                        ? 'text-red-600'
-                        : item.trackingSteps?.every(step => step.status === 'completed')
-                          ? 'text-green-600'
-                          : 'text-blue-600'
+                      ? 'text-red-600'
+                      : item.trackingSteps?.every(step => step.status === 'completed')
+                        ? 'text-green-600'
+                        : 'text-blue-600'
                       }`}
                     onClick={() => handleTrack(item)}
                   />
@@ -249,27 +250,17 @@ const ApplicantsTable = () => {
             <DialogTitle>Applicant Process Workflow</DialogTitle>
           </DialogHeader>
           <div className="flex flex-col gap-4 py-4">
-            {selectedApplicant && selectedApplicant.trackingSteps?.map((step, index) => (
-              <div key={index} className="flex items-center gap-3">
-                <input
-                  type="checkbox"
-                  className="w-5 h-5 cursor-pointer accent-blue-600"
-                  checked={step.status === 'completed'}
-                  disabled={index !== selectedApplicant.currentStep}
-                  onChange={() => handleUpdateStep(index)}
+            {selectedApplicant && selectedApplicant.trackingSteps ? (
+              <div className="w-full">
+                <Tracker
+                  steps={selectedApplicant.trackingSteps}
+                  currentStep={selectedApplicant.currentStep}
+                  onUpdateStep={handleUpdateStep}
                 />
-                <div className="flex flex-col">
-                  <span className={`font-semibold ${step.status === 'completed' ? 'text-green-600' : 'text-gray-700'}`}>
-                    {step.name}
-                  </span>
-                  <span className="text-xs text-gray-400">
-                    {step.status === 'completed' ? `Completed on ${new Date(step.date).toLocaleDateString()}` :
-                      index === selectedApplicant.currentStep ? "Pending Action" : "Upcoming"}
-                  </span>
-                </div>
               </div>
-            ))}
-            {selectedApplicant && !selectedApplicant.trackingSteps && <p>No workflow available</p>}
+            ) : (
+              <p>No workflow steps available.</p>
+            )}
           </div>
         </DialogContent>
       </Dialog>
