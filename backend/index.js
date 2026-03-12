@@ -21,6 +21,8 @@ import monitoringRoutes from './interview-bot-merged/routes/monitoringRoutes.js'
 import isAuthenticated from "./middlewares/isAuthenticated.js";
 import resumeRoutes from "./routes/resumeRoutes.js";
 import aiRoute from "./routes/aiRoute.js";
+import codingProblemRoute from "./routes/codingProblem.route.js";
+import codingRoute from "./routes/coding.route.js";
 
 
 
@@ -61,6 +63,8 @@ app.use('/api/report', isAuthenticated, reportRoutes);
 app.use('/api/monitoring', isAuthenticated, monitoringRoutes);
 app.use('/api/resumes', resumeRoutes);
 app.use('/api/ai', aiRoute);
+app.use('/api/v1/coding-problems', codingProblemRoute);
+app.use('/api/v1/coding', codingRoute);
 
 
 

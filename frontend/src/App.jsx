@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { InterviewProvider } from './context/InterviewContext';
+import { ThemeProvider } from 'next-themes';
 
 // Main Portal Components
 import Home from './components/Home';
@@ -9,6 +10,8 @@ import Jobs from './components/Jobs';
 import Browse from './components/Browse';
 import Profile from './components/Profile';
 import JobDescription from './components/JobDescription';
+import CodingPracticeList from './components/CodingPracticeList';
+import ProblemDetails from './components/ProblemDetails';
 
 // Admin Components
 import Companies from './components/admin/Companies';
@@ -17,6 +20,9 @@ import CompanySetup from './components/admin/CompanySetup';
 import AdminJobs from './components/admin/AdminJobs';
 import PostJob from './components/admin/PostJob';
 import Applicants from './components/admin/Applicants';
+import CodingProblems from './components/admin/CodingProblems';
+import CodingProblemList from './components/admin/CodingProblemList';
+import EditCodingProblem from './components/admin/EditCodingProblem';
 
 // Interview Bot Components
 import LandingPage from './components/LandingPage';
@@ -43,8 +49,8 @@ function App() {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <InterviewProvider>
-          <Router>
+          <InterviewProvider>
+            <Router>
             <div className="app">
               <Routes>
                 {/* Main Portal Routes */}
@@ -55,6 +61,8 @@ function App() {
                 <Route path="/browse" element={<Browse />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/description/:id" element={<JobDescription />} />
+                <Route path="/coding-practice" element={<CodingPracticeList />} />
+                <Route path="/coding-practice/:id" element={<ProblemDetails />} />
 
                 {/* Admin Routes */}
                 <Route path="/admin/companies" element={<Companies />} />
@@ -63,6 +71,9 @@ function App() {
                 <Route path="/admin/jobs" element={<AdminJobs />} />
                 <Route path="/admin/jobs/create" element={<PostJob />} />
                 <Route path="/admin/jobs/:id/applicants" element={<Applicants />} />
+                <Route path="/admin/coding-problems" element={<CodingProblems />} />
+                <Route path="/admin/coding-problems/list" element={<CodingProblemList />} />
+                <Route path="/admin/coding-problems/edit/:id" element={<EditCodingProblem />} />
 
                 {/* Interview Bot Routes */}
                 <Route path="/interview-bot" element={<LandingPage />} />
@@ -83,8 +94,8 @@ function App() {
             </div>
           </Router>
         </InterviewProvider>
-      </PersistGate>
-    </Provider>
+    </PersistGate>
+  </Provider>
   );
 }
 

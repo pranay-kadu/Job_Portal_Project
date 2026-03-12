@@ -2,13 +2,14 @@ import React from 'react'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 import { Button } from '../ui/button'
 import { Avatar, AvatarImage } from '../ui/avatar'
-import { LogOut, User2, FileText, ScanLine, Bot } from 'lucide-react'
+import { LogOut, User2, FileText, ScanLine, Bot, Code } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import axios from 'axios'
 import { USER_API_END_POINT } from '@/utils/constant'
 import { setUser } from '@/redux/authSlice'
 import { toast } from 'sonner'
+import { ModeToggle } from '../ModeToggle'
 
 const Navbar = () => {
     const { user } = useSelector(store => store.auth);
@@ -47,6 +48,7 @@ const Navbar = () => {
                             <>
                                 <li className="hover:text-[#0052CC] transition"><Link to="/admin/companies">Companies</Link></li>
                                 <li className="hover:text-[#0052CC] transition"><Link to="/admin/jobs">Jobs</Link></li>
+                                <li className="hover:text-[#0052CC] transition"><Link to="/admin/coding-problems/list">Coding Problems</Link></li>
                             </>
                         ) : (
                             <>
@@ -56,8 +58,7 @@ const Navbar = () => {
                             </>
                         )}
                     </ul>
-
-
+                    {/* <ModeToggle /> */}
                     {!user ? (
                         <div className="flex items-center gap-3">
                             <Link to="/login">
@@ -108,6 +109,12 @@ const Navbar = () => {
                                                 <ScanLine size={18} />
                                                 <Link to="/resume-parser">
                                                     <Button variant="link" className="p-0">Resume Parser</Button>
+                                                </Link>
+                                            </div>
+                                            <div className="flex items-center gap-2 hover:text-[#0052CC] cursor-pointer transition">
+                                                <Code className="h-4 w-4 mr-2" />
+                                                <Link to="/coding-practice">
+                                                    <Button variant="link" className="p-0">Coding Practice</Button>
                                                 </Link>
                                             </div>
                                             <div className="flex items-center gap-2 hover:text-[#0052CC] cursor-pointer transition">
