@@ -110,14 +110,6 @@ class FaceDetector:
             self.no_face_start_time = None
             self.multiple_faces_count = 0
             self.mobile_detect_count = 0
-            # Send a clear signal
-            alerts.append({
-                "alertType": "background_clear",
-                "severity": "info",
-                "message": "Background is clear.",
-                "sessionId": session_id,
-                "timestamp": current_time
-            })
             return alerts
         
         # If not clean, handle specific infractions

@@ -27,8 +27,9 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
     email: user?.email || "",
     phoneNumber: user?.phoneNumber || "",
     bio: user?.profile?.bio || "",
-    skills: user?.profile?.skills?.map((skill) => skill) || "",
+    skills: user?.profile?.skills?.join(",") || "",
     file: user?.profile?.resume || "",
+    profilePhoto: user?.profile?.profilePhoto || "",
   });
   const dispatch = useDispatch();
 
@@ -49,11 +50,15 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
     formData.append("phoneNumber", input.phoneNumber);
     formData.append("bio", input.bio);
     formData.append("skills", input.skills);
-    if (input.file) {
+    if (input.file && typeof input.file !== 'string') {
       formData.append("file", input.file);
+    }
+    if (input.profilePhoto && typeof input.profilePhoto !== 'string') {
+      formData.append("profilePhoto", input.profilePhoto);
     }
     try {
       setLoading(true);
+      console.log("DEBUG: Sending update request to", `${USER_API_END_POINT}/profile/update`);
       const res = await axios.post(
         `${USER_API_END_POINT}/profile/update`,
         formData,
@@ -166,6 +171,19 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                   type="file"
                   accept="application/pdf"
                   onChange={fileChangeHandler}
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="profilePhoto" className="text-right">
+                  Profile Photo
+                </Label>
+                <Input
+                  id="profilePhoto"
+                  name="profilePhoto"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setInput({ ...input, profilePhoto: e.target.files?.[0] })}
                   className="col-span-3"
                 />
               </div>

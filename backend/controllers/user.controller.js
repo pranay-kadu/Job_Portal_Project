@@ -14,9 +14,6 @@ export const register = async (req, res) => {
                 success: false
             });
         };
-        const file = req.file;
-        const fileUri = getDataUri(file);
-        const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
 
         const user = await User.findOne({ email });
         if (user) {
@@ -25,6 +22,15 @@ export const register = async (req, res) => {
                 success: false,
             })
         }
+        
+        let profilePhoto = "";
+        const file = req.file;
+        if (file) {
+            const fileUri = getDataUri(file);
+            const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+            profilePhoto = cloudResponse.secure_url;
+        }
+
         const hashedPassword = await bcrypt.hash(password, 10);
 
         await User.create({
@@ -34,7 +40,7 @@ export const register = async (req, res) => {
             password: hashedPassword,
             role,
             profile:{
-                profilePhoto:cloudResponse.secure_url,
+                profilePhoto,
             }
         });
 
@@ -44,6 +50,10 @@ export const register = async (req, res) => {
         });
     } catch (error) {
         console.log(error);
+        return res.status(500).json({
+            message: "Server Error",
+            success: false
+        });
     }
 }
 export const login = async (req, res) => {
@@ -99,6 +109,10 @@ export const login = async (req, res) => {
         })
     } catch (error) {
         console.log(error);
+        return res.status(500).json({
+            message: "Server Error",
+            success: false
+        });
     }
 }
 export const logout = async (req, res) => {
@@ -109,6 +123,10 @@ export const logout = async (req, res) => {
         })
     } catch (error) {
         console.log(error);
+        return res.status(500).json({
+            message: "Server Error",
+            success: false
+        });
     }
 }
 // Update User Profile
@@ -116,10 +134,14 @@ export const logout = async (req, res) => {
 export const updateProfile = async (req, res) => {
   try {
     const { fullname, email, phoneNumber, bio, skills } = req.body;
+    console.log("DEBUG: updateProfile request body:", req.body);
+    console.log("DEBUG: updateProfile files:", req.files);
     const userId = req.id;
+    console.log("DEBUG: updateProfile userId from token:", userId);
 
     let user = await User.findById(userId);
     if (!user) {
+      console.log("DEBUG: user not found in DB");
       return res.status(404).json({ message: "User not found", success: false });
     }
 
@@ -129,9 +151,21 @@ export const updateProfile = async (req, res) => {
     if (bio) user.profile.bio = bio;
     if (skills) user.profile.skills = skills.split(",");
 
-    // -------- PDF UPLOAD FIX --------
-    if (req.file) {
-      const cloudResult = await new Promise((resolve, reject) => {
+    // Handle uploads to Cloudinary
+    const files = req.files;
+    
+    // 1. Handle Profile Photo upload
+    if (files?.profilePhoto) {
+      const photoFile = files.profilePhoto[0];
+      const photoUri = getDataUri(photoFile);
+      const photoResult = await cloudinary.uploader.upload(photoUri.content);
+      user.profile.profilePhoto = photoResult.secure_url;
+    }
+
+    // 2. Handle Resume upload
+    if (files?.file) {
+      const resumeFile = files.file[0];
+      const resumeResult = await new Promise((resolve, reject) => {
         cloudinary.uploader.upload_stream(
           {
             resource_type: "raw",
@@ -141,13 +175,12 @@ export const updateProfile = async (req, res) => {
             if (error) reject(error);
             else resolve(result);
           }
-        ).end(req.file.buffer);
+        ).end(resumeFile.buffer);
       });
 
-      user.profile.resume = cloudResult.secure_url;
-      user.profile.resumeOriginalName = req.file.originalname;
+      user.profile.resume = resumeResult.secure_url;
+      user.profile.resumeOriginalName = resumeFile.originalname;
     }
-    // -------- END FIX --------------
 
     await user.save();
 

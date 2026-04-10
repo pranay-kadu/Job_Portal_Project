@@ -85,6 +85,7 @@ const configController = {
    * GET /api/config/topics
    */
   async getTopics(req, res) {
+    console.log("DEBUG: getTopics controller entered");
     const topics = [
       { id: 'DSA', name: 'Data Structures & Algorithms', description: 'Arrays, trees, graphs, sorting, searching, dynamic programming' },
       { id: 'OOPS', name: 'Object-Oriented Programming', description: 'Classes, inheritance, polymorphism, design patterns' },

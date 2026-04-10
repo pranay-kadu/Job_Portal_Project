@@ -93,13 +93,15 @@ export default function VideoMonitor({ sessionId, onAlert, previewMode = false }
           if (onAlert) {
             onAlert(alert);
           }
-          // Also log to backend
-          monitoringAPI.createAlert({
-            sessionId,
-            alertType: alert.alertType,
-            severity: alert.severity,
-            description: alert.message,
-          }).catch(console.error);
+          // Only log to backend if severity is critical or warning
+          if (alert.severity === 'critical' || alert.severity === 'warning') {
+            monitoringAPI.createAlert({
+              sessionId,
+              alertType: alert.alertType,
+              severity: alert.severity,
+              description: alert.message,
+            }).catch(console.error);
+          }
         } catch (e) {
           console.error('Failed to parse monitoring message:', e);
         }
