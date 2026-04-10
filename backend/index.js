@@ -37,16 +37,19 @@ initializeWebSocket(server);
 const PORT = process.env.PORT || 8000;
 
 /* -------------------- Middleware -------------------- */
+app.use(cors({
+    origin: ["http://localhost:5173", "http://localhost:5174", "http://127.0.0.1:5173", "http://127.0.0.1:5174"],
+    credentials: true,
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use(
-  cors({
-    origin: ["http://localhost:5173", "http://localhost:5174"],
-    credentials: true,
-  })
-);
+// Request logging middleware
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+  next();
+});
 
 
 /* -------------------- Routes -------------------- */
@@ -78,4 +81,13 @@ server.listen(PORT, async () => {
   await connectDB();
   console.log(` Server running on port ${PORT}`);
   console.log(`WebSocket server ready`);
+});
+
+// Final error handler for any uncaught errors in controllers
+app.use((err, req, res, next) => {
+  console.error("Uncaught Error:", err);
+  res.status(err.status || 500).json({
+    success: false,
+    message: err.message || "Internal Server Error",
+  });
 });

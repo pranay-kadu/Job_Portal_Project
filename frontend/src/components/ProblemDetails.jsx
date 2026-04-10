@@ -318,9 +318,6 @@ const ProblemDetails = () => {
                         {executing ? <Loader2 size={14} className={`mr-2 animate-spin ${theme === 'light' ? 'text-white' : 'text-[#ffa116]'}`} /> : <Play size={14} className={`mr-2 ${theme === 'light' ? 'text-white' : 'text-[#ffa116]'}`} fill="currentColor" />}
                         Run Code
                     </button>
-                    <button className={`px-4 py-1.5 rounded-md text-xs font-bold flex items-center transition-colors ${theme === 'light' ? 'bg-green-600 hover:bg-green-700 text-white' : 'bg-[#ffa116] hover:bg-[#e08c10] text-black'}`}>
-                        <CheckCircle2 size={14} className="mr-2" /> Submit
-                    </button>
                 </div>
             </div>
 
@@ -443,9 +440,9 @@ const ProblemDetails = () => {
                                                                 {overallStatus === 'Accepted' ? <CheckCircle2 size={24} /> : <Info size={24} />}
                                                                 {overallStatus}
                                                             </div>
-                                                            <div className="flex gap-6 mt-1 text-xs text-gray-400">
-                                                                <div>Runtime: <span className="text-gray-200">{executionMetrics.runtime} ms</span></div>
-                                                                <div>Memory: <span className="text-gray-200">{executionMetrics.memory} KB</span></div>
+                                                            <div className={`flex gap-6 mt-1 text-xs ${theme === 'light' ? 'text-gray-500' : 'text-gray-400'}`}>
+                                                                <div>Runtime: <span className={theme === 'light' ? 'text-gray-800' : 'text-gray-200'}>{executionMetrics.runtime} ms</span></div>
+                                                                <div>Memory: <span className={theme === 'light' ? 'text-gray-800' : 'text-gray-200'}>{executionMetrics.memory} KB</span></div>
                                                             </div>
                                                         </div>
 
@@ -457,8 +454,8 @@ const ProblemDetails = () => {
                                                                     onClick={() => setSelectedCaseIndex(i)}
                                                                     className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border ${
                                                                         selectedCaseIndex === i 
-                                                                            ? 'bg-[#333] border-[#ffa116] text-white' 
-                                                                            : 'bg-[#1a1a1a] border-transparent text-gray-500 hover:text-gray-300'
+                                                                            ? (theme === 'light' ? 'bg-gray-800 border-gray-800 text-white' : 'bg-[#333] border-[#ffa116] text-white')
+                                                                            : (theme === 'light' ? 'bg-gray-100 border-transparent text-gray-600 hover:bg-gray-200' : 'bg-[#1a1a1a] border-transparent text-gray-500 hover:text-gray-300')
                                                                     } ${
                                                                         !result.passed ? 'border-red-500/50' : ''
                                                                     }`}
@@ -476,7 +473,7 @@ const ProblemDetails = () => {
                                                             <div className="space-y-4">
                                                                 <div className="space-y-1.5">
                                                                     <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">INPUT</label>
-                                                                    <pre className="bg-[#151515] p-3 rounded-lg text-sm font-mono text-gray-200 border border-[#2e2e2e]">
+                                                                    <pre className={`p-3 rounded-lg text-sm font-mono border ${theme === 'light' ? 'bg-gray-100 text-gray-800 border-gray-200' : 'bg-[#151515] text-gray-200 border-[#2e2e2e]'}`}>
                                                                         {testResults[selectedCaseIndex].input}
                                                                     </pre>
                                                                 </div>
@@ -485,7 +482,7 @@ const ProblemDetails = () => {
                                                                     <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">YOUR OUTPUT</label>
                                                                     <pre className={`p-3 rounded-lg text-sm font-mono border ${
                                                                         testResults[selectedCaseIndex].passed 
-                                                                            ? 'bg-[#151515] text-gray-200 border-[#2e2e2e]' 
+                                                                            ? (theme === 'light' ? 'bg-gray-100 text-gray-800 border-gray-200' : 'bg-[#151515] text-gray-200 border-[#2e2e2e]')
                                                                             : 'bg-red-900/10 text-red-200 border-red-900/30'
                                                                     }`}>
                                                                         {testResults[selectedCaseIndex].actual}
@@ -494,7 +491,7 @@ const ProblemDetails = () => {
 
                                                                 <div className="space-y-1.5">
                                                                     <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">EXPECTED OUTPUT</label>
-                                                                    <pre className="bg-[#151515] p-3 rounded-lg text-sm font-mono text-gray-200 border border-[#2e2e2e]">
+                                                                    <pre className={`p-3 rounded-lg text-sm font-mono border ${theme === 'light' ? 'bg-gray-100 text-gray-800 border-gray-200' : 'bg-[#151515] text-gray-200 border-[#2e2e2e]'}`}>
                                                                         {testResults[selectedCaseIndex].expected}
                                                                     </pre>
                                                                 </div>

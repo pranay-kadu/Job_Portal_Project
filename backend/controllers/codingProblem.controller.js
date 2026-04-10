@@ -34,8 +34,10 @@ export const createCodingProblem = async (req, res) => {
 };
 
 export const getCodingProblems = async (req, res) => {
+    console.log("DEBUG: getCodingProblems controller entered");
     try {
         const problems = await CodingProblem.find().sort({ createdAt: -1 });
+        console.log("DEBUG: found problems:", problems.length);
         return res.status(200).json({
             problems,
             success: true
